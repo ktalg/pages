@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My Github Pages</title>
+  </head>
+  <body>
+    <div id="content">
+      <!-- 加载 markdown 文件的内容 -->
+      <div id="markdown-content"></div>
+    </div>
+    <!-- 引入 marked.js 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 加载 markdown 文件的代码 -->
+    <script>
+      fetch('path/to/markdown/file.md')
+        .then(response => response.text())
+        .then(markdown => {
+          document.querySelector('#markdown-content').innerHTML =
+            marked(markdown);
+        });
+    </script>
+  </body>
+</html>
