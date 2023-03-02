@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My GitHub Pages</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
   <style>
@@ -22,27 +22,53 @@
       padding: 2rem;
     }
   </style>
+  <script>
+  window.onload = function() {
+    const files = [];
+
+    // fetch markdown files using Github API
+    fetch("https://github.com/ktalg/pages")
+      .then(response => response.json())
+      .then(function(data) {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].name && data[i].name.endsWith(".md")) {
+            files.push(data[i].name);
+          }
+        }
+        // sort files alphabetically
+        files.sort();
+        // generate file list items
+        for (let i = 0; i < files.length; i++) {
+          const link = document.createElement('a');
+          link.classList.add('file-list-link');
+          link.innerText = files[i];
+          link.href = '#' + files[i];
+          const listItem = document.createElement('div');
+          listItem.classList.add('file-list-item');
+          listItem.appendChild(link);
+          document.querySelector('.file-list').appendChild(listItem);
+        }
+      })
+      .catch(function(err) {
+        console.error(err);
+      });
+  };
+  </script>
 </head>
 <body>
   <h1 class="title is-1">My GitHub Pages</h1>
   <h2 class="subtitle is-3">Markdown Files</h2>
-  <div class="file-list">
-    <!-- 到同级目录下查找所有markdown文件 -->
-    <?php
-      $files = glob('*.md');
-      foreach ($files as $file) {
-        echo '<div class="file-list-item"><a class="file-list-link" href="#' . $file . '">' . $file . '</a></div>';
-      }
-    ?>
-  </div>
+  <div class="file-list"></div>
   <div class="content">
-    <!-- 对于每个markdown文件，生成一段html代码 -->
     <?php
+      // include parsedown.php
+      require_once 'Parsedown.php';
+      // loop through markdown files
+      $files = glob('*.md');
       foreach ($files as $file) {
         echo '<h2 class="subtitle is-5" id="' . $file . '">' . $file . '</h2>';
         echo '<hr>';
         $markdown = file_get_contents($file);
-        require_once Parsedown.php;
         $parsedown = new Parsedown();
         echo $parsedown->text($markdown);
       }
