@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>My Github Pages</title>
-  </head>
-  <body>
-    <div id="content">
-      <!-- 加载 markdown 文件的内容 -->
-      <div id="markdown-content"></div>
-    </div>
-    <!-- 引入 marked.js 库 -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- 加载 markdown 文件的代码 -->
-    <script>
-      fetch('file.md')
-        .then(response => response.text())
-        .then(markdown => {
-          document.querySelector('#markdown-content').innerHTML =
-            marked(markdown);
-        });
-    </script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My GitHub Pages</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+  <style>
+    body {
+      padding: 2rem;
+    }
+    .file-list {
+      margin-bottom: 2rem;
+    }
+    .file-list-item {
+      margin-bottom: 0.5rem;
+    }
+    .file-list-link {
+      color: #363636;
+    }
+    .content {
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title is-1">My GitHub Pages</h1>
+  <h2 class="subtitle is-3">Markdown Files</h2>
+  <div class="file-list">
+    <!-- 到同级目录下查找所有markdown文件 -->
+    <?php
+      $files = glob('*.md');
+      foreach ($files as $file) {
+        echo '<div class="file-list-item"><a class="file-list-link" href="#' . $file . '">' . $file . '</a></div>';
+      }
+    ?>
+  </div>
+  <div class="content">
+    <!-- 对于每个markdown文件，生成一段html代码 -->
+    <?php
+      foreach ($files as $file) {
+        echo '<h2 class="subtitle is-5" id="' . $file . '">' . $file . '</h2>';
+        echo '<hr>';
+        $markdown = file_get_contents($file);
+        require_once Parsedown.php;
+        $parsedown = new Parsedown();
+        echo $parsedown->text($markdown);
+      }
+    ?>
+  </div>
+</body>
 </html>
